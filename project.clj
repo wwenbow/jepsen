@@ -4,7 +4,7 @@
                            [org.clojure/data.fressian "0.2.0"]
                            [clj-time "0.6.0"]
                            [aleph "0.3.0-beta16"]
-                           [knossos "0.1.1-SNAPSHOT"]
+                           [knossos "0.2"]
                            [clj-ssh "0.5.7"]
                            [hiccup "1.0.5"]
                            [org.clojars.achim/multiset "0.1.0-SNAPSHOT"]
@@ -20,12 +20,13 @@
                            [org.apache.curator/curator-recipes "2.0.1-incubating"
                             :exclusions [org.jboss.netty/netty]]
                            [clj-kafka "0.1.2-0.8"]
-                           [clojurewerkz/cassaforte "1.2.0"
+                           [clojurewerkz/cassaforte "1.3.0"
                             :exclusions [com.datastax.cassandra/cassandra-driver-core]]
-                           [com.datastax.cassandra/cassandra-driver-core "1.0.3"]
+                           [com.datastax.cassandra/cassandra-driver-core "2.0.0"]
                            [byte-streams "0.1.4"]
                            [org.clojure/math.combinatorics "0.0.4"]
                            [com.novemberain/langohr "2.7.1"]
+                           [org.apache.hbase/hbase-client "0.98.5-hadoop2"]
                            [com.foundationdb/fdb-java "2.0.0"]]
             :profiles {:dev {:dependencies [[midje "1.5.0"]]}}
             :main jepsen.bin

@@ -89,6 +89,15 @@
         (System/exit 0))
 
       (when
+        (some #{"hbase"
+                "hbase-append"} app-names)
+        (require 'jepsen.hbase)
+        (def app-map (merge app-map {
+          "hbase" (eval 'jepsen.hbase/hbase-app)
+          "hbase-append" (eval 'jepsen.hbase/hbase-append-app)
+          })))
+
+      (when
         (some #{"foundationdb"
                 "foundationdb-append"
                 "foundationdb-append-noretry"} app-names)
