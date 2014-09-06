@@ -125,6 +125,7 @@
   [opts]
   (let [; Number of writes to each row
         concurrency  2
+        client-id   (rand-int Integer/MAX_VALUE)
         hbase-config (create-configuration opts)
         hbase-admin (new HBaseAdmin hbase-config)
         hbase-conn (HConnectionManager/createConnection hbase-config)]
@@ -138,8 +139,7 @@
         ))
         
       (add [app element]
-        (let [table (.getTable hbase-conn "test-isolation")
-              client-id  (rand-int Integer/MAX_VALUE)]
+        (let [table (.getTable hbase-conn "test-isolation")]
           ; Introduce some entropy
           (sleep (rand 200))
 
