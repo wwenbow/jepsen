@@ -90,11 +90,13 @@
 
       (when
         (some #{"hbase"
-                "hbase-append"} app-names)
+                "hbase-append"
+                "hbase-isolation"} app-names)
         (require 'jepsen.hbase)
         (def app-map (merge app-map {
           "hbase" (eval 'jepsen.hbase/hbase-app)
           "hbase-append" (eval 'jepsen.hbase/hbase-append-app)
+          "hbase-isolation" (eval 'jepsen.hbase/hbase-isolation-app)
           })))
 
       (when
