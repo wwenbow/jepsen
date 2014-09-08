@@ -108,6 +108,41 @@
         )
       ))))
 
+(defn hbase-counter-app
+  "All writes are increments. Recovers [0...n] where n is the current value of
+  the counter."
+  [opts]
+  (let [hbase-config (create-configuration opts)
+        hbase-admin (new HBaseAdmin hbase-config)
+        hbase-conn (HConnectionManager/createConnection hbase-config)]
+    (reify SetApp
+      (setup [app]
+        (let [hbase-table (new HTableDescriptor "test-counter")
+              hbase-col (new HColumnDescriptor "cf")]
+          (.addFamily hbase-table hbase-col)
+          (when (not (.tableExists hbase-admin "test-counter"))
+            (.createTable hbase-admin hbase-table))
+        ))
+
+      (add [app element]
+        (let [table (.getTable hbase-conn "test-counter")
+              key (Bytes/toBytes "key")]
+          (.incrementColumnValue table key cf cf-value 1)
+          ok))
+
+      (results [app]
+        (let [table (.getTable hbase-conn "test-counter")
+              key (Bytes/toBytes "key")
+              g (new Get key)]
+          (range (Bytes/toLong (.getValue (.get table g) cf cf-value)))))
+
+      (teardown [app]
+        (when (.tableExists hbase-admin "test-counter")
+          (.disableTable hbase-admin "test-counter")
+          (.deleteTable hbase-admin "test-counter")
+        )
+      ))))
+
 ; Hack: use this to record the set of all written elements for isolation-app.
 (def writes (atom #{}))
 
