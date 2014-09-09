@@ -31,7 +31,7 @@
   [opts]
   (let [hbase-config (HBaseConfiguration/create)]
     ; zookeeper is running on n5
-    (.set hbase-config "hbase.zookeeper.quorum" "n5")
+    (.set hbase-config "hbase.zookeeper.quorum" "n1")
     hbase-config))
 
 (defn hbase-app
