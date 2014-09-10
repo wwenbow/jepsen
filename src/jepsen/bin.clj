@@ -92,13 +92,15 @@
         (some #{"hbase"
                 "hbase-append"
                 "hbase-counter"
-                "hbase-isolation"} app-names)
+                "hbase-isolation"
+                "hbase-isolation-multiple-cf"} app-names)
         (require 'jepsen.hbase)
         (def app-map (merge app-map {
           "hbase" (eval 'jepsen.hbase/hbase-app)
           "hbase-append" (eval 'jepsen.hbase/hbase-append-app)
           "hbase-counter" (eval 'jepsen.hbase/hbase-counter-app)
           "hbase-isolation" (eval 'jepsen.hbase/hbase-isolation-app)
+          "hbase-isolation-multiple-cf" (eval 'jepsen.hbase/hbase-isolation-multiple-cf-app)
           })))
 
       (when

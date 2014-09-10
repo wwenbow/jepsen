@@ -20,6 +20,8 @@
 
 (def cf (Bytes/toBytes "cf"))
 
+(def cf2 (Bytes/toBytes "cf2"))
+
 (def cf-value (Bytes/toBytes "value"))
 
 (def cf-a (Bytes/toBytes "a"))
@@ -215,3 +217,76 @@
         )
       ))))
 
+; Hack: use this to record the set of all written elements for isolation-app.
+(def writes-multiple-cf (atom #{}))
+
+(defn hbase-isolation-multiple-cf-app
+  "This app tests whether or not it is possible to consistently update multiple
+  cells in a row, such that either *both* writes are visible together, or
+  *neither* is.
+
+  Each client picks a random int identifier to distinguish itself from the
+  other clients. It tries to write this identifier to cell A, and -identifier
+  to cell B. The write is considered successful if A=-B. It is unsuccessful if
+  A is *not* equal to -B; e.g. our updates were not isolated.
+  
+  'concurrency defines the number of writes made to each row. "
+  [opts]
+  (let [; Number of writes to each row
+        concurrency  2
+        client-id   (rand-int Integer/MAX_VALUE)
+        hbase-config (create-configuration opts)
+        hbase-admin (new HBaseAdmin hbase-config)
+        hbase-conn (HConnectionManager/createConnection hbase-config)]
+    (reify SetApp
+      (setup [app]
+        (let [hbase-table (new HTableDescriptor "test-isolation-multiple-cf")
+              hbase-col (new HColumnDescriptor "cf")
+              hbase-col2 (new HColumnDescriptor "cf2")]
+          (.addFamily hbase-table hbase-col)
+          (.addFamily hbase-table hbase-col2)
+          (when (not (.tableExists hbase-admin "test-isolation-multiple-cf"))
+            (.createTable hbase-admin hbase-table))
+        ))
+        
+      (add [app element]
+        (let [table (.getTable hbase-conn "test-isolation-multiple-cf")]
+          ; Introduce some entropy
+          (sleep (rand 200))
+
+          ; Record write in memory
+          (swap! writes-multiple-cf conj element)
+
+          (dotimes [i concurrency]
+            (let [e (- element i)]
+              (when (<= 0 e) 
+                (let [p (new Put (Bytes/toBytes (Integer/valueOf e)))]
+                  (.add p cf cf-a (Bytes/toBytes (Integer/valueOf client-id)))
+                  (.add p cf2 cf-b (Bytes/toBytes (Integer/valueOf (- client-id))))
+                  (.put table p)))))
+          (.close table)))
+
+      (results [app]
+        (let [table (.getTable hbase-conn "test-isolation-multiple-cf")]
+          (->> (set (map #(hash-map :id (Bytes/toInt (.getRow %)), 
+                                    :a (Bytes/toInt (.getValue % cf cf-a)), 
+                                    :b (Bytes/toInt (.getValue % cf2 cf-b)))
+                    (iterator-seq (.iterator (.getScanner table (new Scan))))))
+            (remove #(= (:a %) (- (:b %))))
+            prn
+            dorun)
+          (->> (set (map #(hash-map :id (Bytes/toInt (.getRow %)), 
+                                    :a (Bytes/toInt (.getValue % cf cf-a)), 
+                                    :b (Bytes/toInt (.getValue % cf2 cf-b)))
+                    (iterator-seq (.iterator (.getScanner table (new Scan))))))
+            (remove #(= (:a %) (- (:b %))))
+            (map :id)
+            (set/difference @writes-multiple-cf))
+        ))
+
+      (teardown [app]
+        (when (.tableExists hbase-admin "test-isolation-multiple-cf")
+          (.disableTable hbase-admin "test-isolation-multiple-cf")
+          (.deleteTable hbase-admin "test-isolation-multiple-cf")
+        )
+      ))))
