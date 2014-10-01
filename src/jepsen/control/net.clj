@@ -4,15 +4,16 @@
   (:use jepsen.control)
   (:require [clojure.string :as str]))
 
-(def hosts-map {:n1 "n1"
-              :n2 "n2"
-              :n3 "n3"
-              :n4 "n4"
-              :n5 "n5"
+(def hosts-map {:n1 "qa-node209.qa.lab"
+              :n2 "qa-node210.qa.lab"
+              :n3 "qa-node211.qa.lab"
+              :n4 "qa-node186.qa.lab"
+              ;:n5 "localhost"
               })
 
 (def small-partition-set #{(:n1 hosts-map) (:n2 hosts-map)})
-(def large-partition-set #{(:n3 hosts-map) (:n4 hosts-map) (:n5 hosts-map)})
+;(def large-partition-set #{(:n3 hosts-map) (:n4 hosts-map) (:n5 hosts-map)})
+(def large-partition-set #{(:n3 hosts-map) (:n4 hosts-map)})
 
 (defn slow
   "Slows down the network."

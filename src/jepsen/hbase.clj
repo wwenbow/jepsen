@@ -33,7 +33,7 @@
   [opts]
   (let [hbase-config (HBaseConfiguration/create)]
     ; zookeeper is running on n5
-    (.set hbase-config "hbase.zookeeper.quorum" "n1")
+    (.set hbase-config "hbase.zookeeper.quorum" "qa-node209.qa.lab")
     hbase-config))
 
 (defn hbase-app
@@ -50,7 +50,7 @@
           (when (not (.tableExists hbase-admin "test"))
             (.createTable hbase-admin hbase-table))
         ))
-        
+
       (add [app element]
         (let [table (.getTable hbase-conn "test")
               p (new Put (Bytes/toBytes element))]
@@ -60,7 +60,7 @@
 
       (results [app]
         (let [table (.getTable hbase-conn "test")]
-          (set (map #(Bytes/toInt (.getValue % cf cf-value)) 
+          (set (map #(Bytes/toInt (.getValue % cf cf-value))
                     (iterator-seq (.iterator (.getScanner table (new Scan))))))))
 
       (teardown [app]
@@ -84,7 +84,7 @@
           (when (not (.tableExists hbase-admin "test-append"))
             (.createTable hbase-admin hbase-table))
         ))
-        
+
       (add [app element]
         (let [table (.getTable hbase-conn "test-append")
               key (Bytes/toBytes "key")
@@ -100,7 +100,7 @@
         (let [table (.getTable hbase-conn "test-append")
               key (Bytes/toBytes "key")
               g (new Get key)]
-          (map #(new Long %) 
+          (map #(new Long %)
                (split (or (Bytes/toString (.getValue (.get table g) cf cf-value)) "") #","))))
 
       (teardown [app]
@@ -157,7 +157,7 @@
   other clients. It tries to write this identifier to cell A, and -identifier
   to cell B. The write is considered successful if A=-B. It is unsuccessful if
   A is *not* equal to -B; e.g. our updates were not isolated.
-  
+
   'concurrency defines the number of writes made to each row. "
   [opts]
   (let [; Number of writes to each row
@@ -174,7 +174,7 @@
           (when (not (.tableExists hbase-admin "test-isolation"))
             (.createTable hbase-admin hbase-table))
         ))
-        
+
       (add [app element]
         (let [table (.getTable hbase-conn "test-isolation")]
           ; Introduce some entropy
@@ -185,7 +185,7 @@
 
           (dotimes [i concurrency]
             (let [e (- element i)]
-              (when (<= 0 e) 
+              (when (<= 0 e)
                 (let [p (new Put (Bytes/toBytes (Integer/valueOf e)))]
                   (.add p cf cf-a (Bytes/toBytes (Integer/valueOf client-id)))
                   (.add p cf cf-b (Bytes/toBytes (Integer/valueOf (- client-id))))
@@ -194,15 +194,15 @@
 
       (results [app]
         (let [table (.getTable hbase-conn "test-isolation")]
-          (->> (set (map #(hash-map :id (Bytes/toInt (.getRow %)), 
-                                    :a (Bytes/toInt (.getValue % cf cf-a)), 
+          (->> (set (map #(hash-map :id (Bytes/toInt (.getRow %)),
+                                    :a (Bytes/toInt (.getValue % cf cf-a)),
                                     :b (Bytes/toInt (.getValue % cf cf-b)))
                     (iterator-seq (.iterator (.getScanner table (new Scan))))))
             (remove #(= (:a %) (- (:b %))))
             prn
             dorun)
-          (->> (set (map #(hash-map :id (Bytes/toInt (.getRow %)), 
-                                    :a (Bytes/toInt (.getValue % cf cf-a)), 
+          (->> (set (map #(hash-map :id (Bytes/toInt (.getRow %)),
+                                    :a (Bytes/toInt (.getValue % cf cf-a)),
                                     :b (Bytes/toInt (.getValue % cf cf-b)))
                     (iterator-seq (.iterator (.getScanner table (new Scan))))))
             (remove #(= (:a %) (- (:b %))))
@@ -229,7 +229,7 @@
   other clients. It tries to write this identifier to cell A, and -identifier
   to cell B. The write is considered successful if A=-B. It is unsuccessful if
   A is *not* equal to -B; e.g. our updates were not isolated.
-  
+
   'concurrency defines the number of writes made to each row. "
   [opts]
   (let [; Number of writes to each row
@@ -248,7 +248,7 @@
           (when (not (.tableExists hbase-admin "test-isolation-multiple-cf"))
             (.createTable hbase-admin hbase-table))
         ))
-        
+
       (add [app element]
         (let [table (.getTable hbase-conn "test-isolation-multiple-cf")]
           ; Introduce some entropy
@@ -259,7 +259,7 @@
 
           (dotimes [i concurrency]
             (let [e (- element i)]
-              (when (<= 0 e) 
+              (when (<= 0 e)
                 (let [p (new Put (Bytes/toBytes (Integer/valueOf e)))]
                   (.add p cf cf-a (Bytes/toBytes (Integer/valueOf client-id)))
                   (.add p cf2 cf-b (Bytes/toBytes (Integer/valueOf (- client-id))))
@@ -268,15 +268,15 @@
 
       (results [app]
         (let [table (.getTable hbase-conn "test-isolation-multiple-cf")]
-          (->> (set (map #(hash-map :id (Bytes/toInt (.getRow %)), 
-                                    :a (Bytes/toInt (.getValue % cf cf-a)), 
+          (->> (set (map #(hash-map :id (Bytes/toInt (.getRow %)),
+                                    :a (Bytes/toInt (.getValue % cf cf-a)),
                                     :b (Bytes/toInt (.getValue % cf2 cf-b)))
                     (iterator-seq (.iterator (.getScanner table (new Scan))))))
             (remove #(= (:a %) (- (:b %))))
             prn
             dorun)
-          (->> (set (map #(hash-map :id (Bytes/toInt (.getRow %)), 
-                                    :a (Bytes/toInt (.getValue % cf cf-a)), 
+          (->> (set (map #(hash-map :id (Bytes/toInt (.getRow %)),
+                                    :a (Bytes/toInt (.getValue % cf cf-a)),
                                     :b (Bytes/toInt (.getValue % cf2 cf-b)))
                     (iterator-seq (.iterator (.getScanner table (new Scan))))))
             (remove #(= (:a %) (- (:b %))))

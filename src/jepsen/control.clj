@@ -12,8 +12,8 @@
 (def ^:dynamic *trace*    "Shall we trace commands?"      false)
 (def ^:dynamic *dir*      "Working directory"             "/")
 (def ^:dynamic *sudo*     "User to sudo to"               nil)
-(def ^:dynamic *username* "Username"                      "ubuntu")
-(def ^:dynamic *password* "Password (for login and sudo)" "ubuntu")
+(def ^:dynamic *username* "Username"                      "mapr")
+(def ^:dynamic *password* "Password (for login and sudo)" "maprmapr")
 (def ^:dynamic *private-key-path*         "SSH identity file"     nil)
 (def ^:dynamic *strict-host-key-checking* "Verify SSH host keys"  :yes)
 

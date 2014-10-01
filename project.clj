@@ -26,8 +26,9 @@
                            [byte-streams "0.1.4"]
                            [org.clojure/math.combinatorics "0.0.4"]
                            [com.novemberain/langohr "2.7.1"]
-                           [org.apache.hbase/hbase-client "0.98.5-hadoop2"]
+                           [org.apache.hbase/hbase-client "0.98.4-mapr-1408"]
                            [com.foundationdb/fdb-java "2.0.0"]]
+            :repositories [["mapr.com" "http://repository.mapr.com/nexus/content/groups/mapr-public/"]]
             :profiles {:dev {:dependencies [[midje "1.5.0"]]}}
             :main jepsen.bin
             :jvm-opts ["-Xmx32g" "-XX:+UseConcMarkSweepGC" "-XX:+UseParNewGC"
