@@ -31,6 +31,11 @@
             :repositories [["mapr.com" "http://repository.mapr.com/nexus/content/groups/mapr-public/"]]
             :profiles {:dev {:dependencies [[midje "1.5.0"]]}}
             :main jepsen.bin
+            ;:jvm-opts ["-XX:+UseConcMarkSweepGC" "-XX:+UseParNewGC"
+            ;           "-XX:+CMSParallelRemarkEnabled" "-XX:+AggressiveOpts"
+            ;           "-XX:+UseFastAccessorMethods" "-server"
+            ;           "-Xmx768m" "-Dzookeeper.sasl.client=false"
+            ;           "-Djava.security.auth.login.config=/opt/mapr/conf/mapr.login.conf"])
             :jvm-opts ["-Xmx32g" "-XX:+UseConcMarkSweepGC" "-XX:+UseParNewGC"
                        "-XX:+CMSParallelRemarkEnabled" "-XX:+AggressiveOpts"
                        "-XX:+UseFastAccessorMethods" "-server"])
