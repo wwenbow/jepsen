@@ -28,14 +28,15 @@
                            [com.novemberain/langohr "2.7.1"]
                            [org.apache.hbase/hbase-client "0.98.4-mapr-1408"]
                            [com.foundationdb/fdb-java "2.0.0"]]
-            :repositories [["mapr.com" "http://repository.mapr.com/nexus/content/groups/mapr-public/"]]
+            :repositories [["mapr.com" "http://repository.mapr.com/nexus/content/groups/mapr-public/"]
+                           ["mapr.internal" "http://maven.corp.maprtech.com/nexus/content/groups/public/"]]
             :profiles {:dev {:dependencies [[midje "1.5.0"]]}}
             :main jepsen.bin
-            ;:jvm-opts ["-XX:+UseConcMarkSweepGC" "-XX:+UseParNewGC"
-            ;           "-XX:+CMSParallelRemarkEnabled" "-XX:+AggressiveOpts"
-            ;           "-XX:+UseFastAccessorMethods" "-server"
-            ;           "-Xmx768m" "-Dzookeeper.sasl.client=false"
-            ;           "-Djava.security.auth.login.config=/opt/mapr/conf/mapr.login.conf"])
-            :jvm-opts ["-Xmx32g" "-XX:+UseConcMarkSweepGC" "-XX:+UseParNewGC"
+            :jvm-opts ["-XX:+UseConcMarkSweepGC" "-XX:+UseParNewGC"
                        "-XX:+CMSParallelRemarkEnabled" "-XX:+AggressiveOpts"
-                       "-XX:+UseFastAccessorMethods" "-server"])
+                       "-XX:+UseFastAccessorMethods" "-server"
+                       "-Xmx768m" "-Dzookeeper.sasl.client=false"
+                       "-Djava.security.auth.login.config=/opt/mapr/conf/mapr.login.conf"])
+            ;:jvm-opts ["-Xmx32g" "-XX:+UseConcMarkSweepGC" "-XX:+UseParNewGC"
+            ;           "-XX:+CMSParallelRemarkEnabled" "-XX:+AggressiveOpts"
+            ;           "-XX:+UseFastAccessorMethods" "-server"])

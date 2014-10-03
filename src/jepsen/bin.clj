@@ -104,6 +104,21 @@
           })))
 
       (when
+        (some #{"maprdb"
+                "maprdb-append"
+                "maprdb-counter"
+                "maprdb-isolation"
+                "maprdb-isolation-multiple-cf"} app-names)
+        (require 'jepsen.maprdb)
+        (def app-map (merge app-map {
+          "maprdb" (eval 'jepsen.maprdb/hbase-app)
+          "maprdb-append" (eval 'jepsen.maprdb/hbase-append-app)
+          "maprdb-counter" (eval 'jepsen.maprdb/hbase-counter-app)
+          "maprdb-isolation" (eval 'jepsen.maprdb/hbase-isolation-app)
+          "maprdb-isolation-multiple-cf" (eval 'jepsen.maprdb/hbase-isolation-multiple-cf-app)
+          })))
+
+      (when
         (some #{"foundationdb"
                 "foundationdb-append"
                 "foundationdb-append-noretry"} app-names)
