@@ -7,3 +7,7 @@ infrastructure, from the first two talks. New work is breaking these code paths,
 
 Available under the EPL; the same as Clojure. Includes Paul Stadig's persistent
 dequeue implementation, available under the MPL.
+
+## Description
+
+http://eng.yammer.com/call-me-maybe-hbase/
