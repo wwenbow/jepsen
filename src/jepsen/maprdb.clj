@@ -34,10 +34,10 @@
   (println "creating configuration")
   (let [hbase-config (HBaseConfiguration/create)]
     (.set hbase-config "hbase.zookeeper.quorum" "qa-node209.qa.lab")
-    ;(.set hbase-config "hbase.rootdir" "maprfs:///hbase")
-    ;(.set hbase-config "hbase.cluster.distributed" "true")
+    (.set hbase-config "hbase.rootdir" "maprfs:///hbase")
+    (.set hbase-config "hbase.cluster.distributed" "true")
     (.set hbase-config "dfs.support.append" "true")
-    ;(.set hbase-config "base.fsutil.maprfs.impl" "org.apache.hadoop.hbase.util.FSMapRUtils")
+    (.set hbase-config "base.fsutil.maprfs.impl" "org.apache.hadoop.hbase.util.FSMapRUtils")
     (.set hbase-config "hbase.zookeeper.property.clientPort" "5181")
     (.set hbase-config "hbase.table.namespace.mappings" "*:/")
     hbase-config))
