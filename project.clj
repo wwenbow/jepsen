@@ -17,9 +17,6 @@
                            [org.clojure/tools.cli "0.2.2"]
                            [com.nuodb.jdbc/nuodb-jdbc "1.1.1"]
                            [myguidingstar/clansi "1.3.0"]
-                           [org.apache.curator/curator-recipes "2.0.1-incubating"
-                            :exclusions [org.jboss.netty/netty]]
-                           [clj-kafka "0.1.2-0.8"]
                            [clojurewerkz/cassaforte "1.3.0"
                             :exclusions [com.datastax.cassandra/cassandra-driver-core]]
                            [com.datastax.cassandra/cassandra-driver-core "2.0.0"]

@@ -1,7 +1,6 @@
 (ns jepsen.bin
   (:require clojure.stacktrace
             [jepsen.cassandra :as cassandra]
-            [jepsen.kafka :as kafka]
             [jepsen.failure :as failure]
             [jepsen.redis :as redis])
   (:use jepsen.set-app
@@ -14,7 +13,6 @@
         jepsen.mongo
         [jepsen.pg    :only [pg-app]]
         [jepsen.nuodb :only [nuodb-app]]
-        [jepsen.zk    :only [zk-app]]
         [clojure.tools.cli :only [cli]]
         [jepsen.control :only [*password*]]
         ))
@@ -27,7 +25,6 @@
    "cassandra-isolation"    cassandra/isolation-app
    "cassandra-transaction"  cassandra/transaction-app
    "cassandra-transaction-dup" cassandra/transaction-dup-app
-   "kafka"                  kafka/app
    "mongo-replicas-safe"    mongo-replicas-safe-app
    "mongo-safe"             mongo-safe-app
    "mongo-unsafe"           mongo-unsafe-app
@@ -40,7 +37,6 @@
    "riak-crdt"              riak-crdt-app
    "pg"                     pg-app
    "nuodb"                  nuodb-app
-   "zk"                     zk-app
    "lock"                   locking-app})
 
 (def failures
@@ -48,7 +44,6 @@
   {"partition"  failure/simple-partition
    "noop"       failure/noop
    "chaos"      (failure/chaos)
-   "kafka"      kafka/failure
    "redis"      redis/failure})
 
 (defn parse-int [i] (Integer. i))
